@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des sous-catégorie{% endblock %}
+
+{% block body %}
+    <h1>SubCategory</h1>
+<div class="container">
+    <br>
+    <h1>Sous-catégories</h1>
+    {% include 'layouts/_flash_message.html.twig' %}
+    <br>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Sous-catégorie</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for sub_category in sub_categories %}
+            <tr>
+                <td>{{ sub_category.id }}</td>
+                <td>{{ sub_category.name }}</td>
+                <td>{{ sub_category.category.name }}</td>
+
+                <td>
+                    <a class="btn btn-outline-primary" href="{{ path('app_sub_category_show', {'id': sub_category.id}) }}">afficher</a>
+                    <a class="btn btn-outline-secondary" href="{{ path('app_sub_category_edit', {'id': sub_category.id}) }}">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">Aucune sous-catégorie à afficher</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="btn btn-outline-success" href="{{ path('app_sub_category_new') }}">Nouvelle sous-catégorie</a>
+    </div>
+{% endblock %}

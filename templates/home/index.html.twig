@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!{% endblock %}
+
+
+
+{% block body %}
+
+<div class="container">
+<br>
+    <h1>Produits</h1>
+    <div class="row">
+        {% for product in products %}
+          <div class="col-md-3 mt-4">
+          <div class="card" style="width: 20vh;">
+          {% if product.image %}
+          <a href="{{ path('app_home_product_show', {'id': product.id})
+          }}"><img src="{{ asset('uploads/images/' ~ product.image) }}"
+          class="card-img-top" alt="{{ product.name}}"> </a>
+        {% else %}
+            <img src={{ asset ('uploads/images/no_image_available_500x350.png')
+            }}" class="card-img-top" alt="Placeholder image">
+        {% endif %}
+        <div class="card-body">
+            <a style="text-decoration: none" href="{{
+                path('app_home_product_show', {'id': product.id}) }}> <h5
+                class="card-title">{{product.name}}</h5> </a>
+                <p class="card-text"
+
+
+
+
+
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Hello {{ controller_name }}! ✅</h1>
+
+    This friendly message is coming from:
+    <ul>
+        <li>Your controller at <code>C:/xampp/htdocs/e-commerce/src/Controller/HomeController.php</code></li>
+        <li>Your template at <code>C:/xampp/htdocs/e-commerce/templates/home/index.html.twig</code></li>
+    </ul>
+</div>
+
+<div class="card" style="width: 18rem;">
+  <img src="..." class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">Card title</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+    <a href="#" class="btn btn-primary">Go somewhere</a>
+  </div>
+</div>
+{% endblock %}
