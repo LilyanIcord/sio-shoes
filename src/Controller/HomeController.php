@@ -7,22 +7,71 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\ProductRepository;
 use App\Entity\Product;
+use App\Repository\CategoryRepository;
+use App\Repository\SubCategoryRepository;
+use Symfony\Component\HttpFoundation\Request;
+use Knp\Component\Pager\PaginatorInterface;
 
 final class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home', methods: ['GET'])]
-    public function index(ProductRepository $productRepository): Response
+    public function index(ProductRepository $productRepository, CategoryRepository 
+    $categoryRepository, Request $request, PaginatorInterface $paginator ): Response
     {
+
+        $data = $productRepository->findBy([],['name'=>"ASC"]);
+        $products = $paginator->paginate(
+            $data,
+            $request->query->getInt('page',1),
+            12
+        );
+        
         return $this->render('home/index.html.twig', [
-            'products' => $productRepository->findBy([],['name'=>"ASC"]),
+            'products' => $products,
+            'categories' =>$categoryRepository->findAll(),
+
         ]);
     }
 
     #[Route('/home/product/{id}/show', name: 'app_home_product_show', methods: ['GET'])]
-    public function show(Product $product): Response
+    public function show($id, Product $product, ProductRepository $productRepository, CategoryRepository $categoryRepository): Response
     {
-        return $this->render('home/index.html.twig', [
-            'products' => $product
+        $lastProducts = $productRepository->findBy([],['id'=>'DESC'],limit: 5);
+
+
+        return $this->render('home/show.html.twig', [
+            'product' => $product,
+            'products' => $lastProducts,
+            'categories' => $categoryRepository->findAll(),
         ]);
     }
+
+    #[Route('/home/product/subcategory/{id}/filter', name: 'app_home_product_filter', methods: ['GET'])]
+    public function filter($id, CategoryRepository $categoryRepository, SubCategoryRepository
+    $subCategoryRepository, ProductRepository $productRepository, PaginatorInterface $paginator, Request $request): Response
+    {
+
+        $products = $subCategoryRepository->find($id)->getProducts();
+        $category = $subCategoryRepository->find($id)->getCategory();
+        $subCategory = $subCategoryRepository->find($id);
+        
+
+        $data = $productRepository->findBy([],['name'=>"ASC"]);
+        $products = $paginator->paginate(
+            $data,
+            $request->query->getInt('page',1),
+            12
+        );
+
+
+        return $this->render('home/filter.html.twig', [
+            'products' => $products,
+            'categories' =>$categoryRepository->findAll(),
+            'category' => $category,
+            'subCategory' => $subCategory,
+
+
+            
+        ]);
+    } 
 }

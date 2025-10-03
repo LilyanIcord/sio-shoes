@@ -39,8 +39,8 @@ final class ProductController extends AbstractController
             if($image){
                 $originalName = pathinfo($image->getClientOriginalName(),
                 PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalName);
-                $newFileName = $safeFilename.'-'.uniqid().'.'.$image->
+                $safeFileName = $slugger->slug($originalName);
+                $newFileName = $safeFileName.'-'.uniqid().'.'.$image->
                 guessExtension();
                 
                 try {
@@ -84,10 +84,36 @@ final class ProductController extends AbstractController
     }
 
     #[Route('/editor/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Product $product, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Product $product, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $image = $form->get('image')->getData();
+            if ($image){
+                $originalName = pathinfo($image->getClientOriginalName(),
+                PATHINFO_FILENAME);
+                $safeFileName = $slugger->slug($originalName);
+                $newFileName = $safeFileName.'-'.uniqid().'.'.$image->
+                guessExtension();
+
+                try{
+                    $image->move(
+                        $this->getParameter('image_dir'),
+                        $newFileName
+                    );
+                }
+
+                catch(FileException $exception){
+
+                }
+
+                $product->setImage($newFileName);
+
+            }
+        }
+      
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
