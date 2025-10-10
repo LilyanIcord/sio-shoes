@@ -45,12 +45,13 @@
             .then(response => response.json())
             .then(data => {
                 shippingCostDisplay.textContent = data.shippingCost + '€';
-                shippingCostForm.value = data.shippingCost + ' €';
+                shippingCostForm.value = data.shippingCost;
                 totalCostDisplay.textContent = ({{ total }} + parseFloat(data.shippingCost)).toFixed(2) + ' €';
             })
             .catch(error => {
                 console.error('Erreur lors de la récupération des frais de livraison :', error);
             });
+        }
         
         if (citySelect){
             citySelect.addEventListener('change', function () { 
@@ -65,5 +66,5 @@
        
       }
     });
-    </script<>
+    </script>
 {% endblock %}
