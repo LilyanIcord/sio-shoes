@@ -19,7 +19,7 @@
                         <div class="card-body">
                             <h1 class="card-title">{{ product.name }}</h1>
                             <p class="card-text text-truncate">{{ product.description }}</p>
-                            <a href="#" class="btn btn-outline-success">Ajouter au panier</a>
+                            <a href="{{ path('app_cart_new',{'id': product.id})}}" class="btn btn-outline-success">Ajouter au panier</a>
                             <br><br>
                             <a class="btn btn-dark" href="{{ path('app_home')}}">Retour</a>
                         </div>
@@ -48,7 +48,7 @@
                 <h5 class="card-title">{{product.name}}</h5> </a>
                 <p class="card-text text-truncate">{{ product.description }}</p>
                 <h3>{{ product.price }} €</h3>
-                <a href="#" class="btn btn-outline-success">Ajouter au panier</a>
+                <a href="{{ path('app_cart_new',{'id': product.id})}}" class="btn btn-outline-success">Ajouter au panier</a>
                 </div>
             </div>
         </div>

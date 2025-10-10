@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="container">
+    <br>
+    <h1>Commande</h1>
+    <br>
+    <div>
+        <h4>Montant total : {{ total|number_format(2, '.', '.') }} €</h4>
+    <strong>
+        Frais de livraison : <span id="shipping-cost"></span>
+    </strong>
+    <h4>
+    Montant total : <span id="total-cost"></span>
+    </h4>
+</div>
+    {{ include('order/_form.html.twig') }}
+    <br>
+    <a class="btn btn-dark" href="{{ path('app_cart')}}">Retour</a>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const citySelect = document.getElementById('order_city');
+        const shippingCostDisplay = document.getElementById('shipping-cost');
+        const shippingCostForm = document.getElementById('order_shippingPrice');
+        const totalCostDisplay = document.getElementById('total-cost');
+
+        function UpdateShippingCost(city) {
+            fetch('{{ path('get_shipping_cost') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With' : 'XMLHttpRequest'
+                },
+                body: new URLSearchParams({city: city})
+            })
+            .then(response => response.json())
+            .then(data => {
+                shippingCostDisplay.textContent = data.shippingCost + '€';
+                shippingCostForm.value = data.shippingCost + ' €';
+                totalCostDisplay.textContent = ({{ total }} + parseFloat(data.shippingCost)).toFixed(2) + ' €';
+            })
+            .catch(error => {
+                console.error('Erreur lors de la récupération des frais de livraison :', error);
+            });
+        
+        if (citySelect){
+            citySelect.addEventListener('change', function () { 
+                 UpdateShippingCost(citySelect.options[citySelect.selectedIndex].value);
+            });
+           
+           if (citySelect.value) {
+            UpdateShippingCost(citySelect.options[citySelect.selectedIndex].value);
+        }
+        
+        
+       
+      }
+    });
+    </script<>
+{% endblock %}
